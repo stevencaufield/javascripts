@@ -1,0 +1,220 @@
+#summary Page tweaker for SensibleErection entries.
+#labels Featured,SensibleErection,user-javascript,greasemonkey,opera,firefox
+<h1>HELP ME!</h1>
+I have a function to toggle comments based on age (> x minutes), but I am having a hell of a time getting a reliable timestamp from SE. If someone can figure out what I need to do, please tell me. I'll pay you handsomely... in rape dollars.
+
+
+= Introduction =
+This project is the reason I found Google projects, since I wanted a public place to host it to share with my fellow SEers (most of whom honestly hate my guts). You guys are great, and I want to give back to the community.
+
+<wiki:toc max_depth="3" />
+
+= About =
+This project is my own, but I borrowed ideas and tips heavily from the web and from SE's own Rojo^, who wrote !SensibleFacial for Firefox+Greasemonkey. But content first, credits later.
+
+This project was written for Opera users. I love Firefox, but I don't use it to browse SE. Greasemonkey doesn't work in Opera. So here is SE Butler. Which, I'm sorry to say, also works in Firefox+Greasemonkey.
+
+The script tweaks entry pages at [http://filtered.SensibleErection.com SensibleErection] to be more readable/safe/something or other. You decide what makes the most sense to you and then zealously attack anyone who disagrees.
+
+
+== Feature List ==
+The following list of features is not canonical, but more tankical. There may be a few surprises not listed here. More detail is given in the [#User_Guide User Guide] section below.
+
+It automatically does the following:
+ * separates replying from moderating for both the entry itself and the comments
+ * expands moderation options for comments, just like !SensibleFacial (see [#Miscellaneous_Notes Miscellaneous Notes] below)
+ * imposes a height limit on the entry and each comment to reduce "Scrollers Elbow"
+ * widens the comments section to use the empty right side of the page (for people who browse on large screens)
+ * makes all user-supplied links open in new page, unless the link already has a target
+
+Some things it allows _you_ to do:
+ * auto-block content (images, movies, etc.) until you specifically click on the blocked part
+ * auto-hide old comments, leaving only the byline visible
+ * freely toggle any comment on/off
+ * auto-hide old threads, completely removing its sub-comments from view
+ * freely toggle any thread on/off
+ * keep your own comments visible regardless of age
+ * moderate or reply inline, without having to reload the page
+ * preview what your comment _should_ look like before submitting (ASCII characters are fine, but extended or Unicode characters often look like garbage after posting _unless_ you force your browser to use Unicode encoding. If you know how to fix this, I'm all ears.)
+
+Things it does not do *yet*:
+ * Blacklist of users
+ * add user info "popup" (this requires loading+parsing the profile page for each user, which is pretty time consuming. I may add it as a background task. Not sure...)
+ * use my cool new reply form for the main post reply
+ * either refresh page after replying OR keep preview until user manually refreshes
+ * handle posting Unicode characters the same way as the standard browser
+ * hide comments by age (other than old/new)
+
+In all seriousness, I am against the idea of blacklisting users, because it shows you are a weak-minded person who cannot handle disagreement. IMO, such people should never be on a place like SE, let alone the Internet.
+
+However, this script is not just for my needs, but also those weak-minded fools who disagree with me. Um, disagree with someone. So I will have it in place eventually, if only for the technical challenge.
+
+
+== Enhancements ==
+This is a shitty work in progress. I am lazy and not likely to make any adjustments that don't excite my interest, although I clearly like to waste time writing comments and acres of code that other people could condense quite nicely. 
+
+So if you want a new feature, by all means send me a PM about it. I'd love to know, even if I don't do anything about it. And then you can write it yourself. Feel free to bastardize this script or write your own.
+
+But if I do like it, I might write it myself.
+
+
+== Compatibility ==
+This script was written for Opera, but has been adapted to work with Firefox+Greasemonkey as well. This adaptation was a *huge fucking pain in the ass*, mostly because Firefox has added XPCNativeWrappers that made all the simple things hard again.
+
+But I guess it's better than keeping a security risk unpatched. `*`_sigh_`*`
+
+Anyway, I actually use this in Opera all the time, but rarely test on Firefox. So I am more likely to miss bugs there.
+
+Some things work better (or at all) in one browser than the other. They are mostly the same, though. You have been warned.
+
+
+= Installation =
+*For Opera Users*
+<br>- - - - - - - - - - - - - - - -<br>
+You must follow these steps:
+ # from the menu, choose `[`Tools | Preferences`]`
+ # on the popup, click the `[`Advanced`]` tab, then select the `[`Content`]` option on the left
+ # click the `[`!JavaScript Options`]` button
+ # `[`Choose`]` a folder on your hard drive to host user javascripts
+ # after that's done, you should copy this script to that folder
+ # you must also copy the GM emulator script [http://www.howtocreate.co.uk/operaStuff/userjs/aagmfunctions.js aagmfunctions.js] to that folder (written by TarquinWJ. See his comments at [http://www.howtocreate.co.uk/operaStuff/userJavaScript.html#compatibility User JavaScript in Opera].)
+
+*For Firefox Users*
+<br>- - - - - - - - - - - - - - - -<br>
+ # install Greasemonkey (you're on your own, here)
+ # install this script as a GM script
+
+Looks like Opera users got the short end of the install stick, don't it?
+
+I was made aware that not everybody can read my mind, so here is a direct link to the file:
+[http://javascripts.googlecode.com/svn/trunk/sebutler/SEButler.user.js SEButler.user.js]
+And this is the other file for the Admin page (which I have not discussed here, mainly because I am still thinking about merging it):
+[http://javascripts.googlecode.com/svn/trunk/sebutler/SEButlerAdmin.user.js SEButlerAdmin.user.js]
+
+
+= User Guide =
+== Notes ==
+For the record, this script only affects entry pages (`*`sensibleerection.com/entry.php/#####). Your main page, single comment view page, and user profile pages will not be harmed. But it will just _brutalize_ those entry pages.
+
+I attempted to maintain the SE Look & Feel as much as possible, so if you don't like that I heartily recommend using Rojo's script instead. (Also, it's faster and probably better coded.)
+
+*Please Note*: the content blocking feature was developed so I can browse SE at work, even when some people post adult material in an entry marked as Safe For Work (_I am looking at you, JOECAM_). However, because this script only starts after the DOM is fully loaded, some images may be displayed briefly before being blocked. Take appropriate precautions.
+
+*Also Note*: I use AJAX to post replies without refreshing the page. As I've mentioned a couple times, there is a weird issue with Unicode characters being posted via AJAX here on SE. SE's charset is archaic English-only, and that causes problems when viewing explicitly typed Unicode (such as my AJAX function sends). I do not know why the regular browser form submission works, and Google seems equally clueless. If you know, please tell me. For now, do not post funky characters with my custom form. This is why I left a link to the comment page.
+
+== Automatic Things ==
+=== Various ===
+This script cleans up the entry page a bit, making some changes regardless of your settings.
+
+You will notice that comments now have a height limit (described below in the settings). They also expand to the right edge of the screen, which I think makes long posts more readable.
+
+Additionally, any links supplied by the users will open in a new page, unless the link already has a target attribute. This makes it very easy to view a picture without losing your place in the thread.
+
+Also, each comment has two buttons to the left. The +/- button will toggle an entire thread, completely hiding the sub-thread comments from view. The .../&there4; button will only affect that comment's text, leaving the byline visible.
+
+Also, there are a few more actions in the byline.
+ * `[^]` shows who modded that comment
+ * `[moderate...]` brings up the inline moderation
+ * `[reply...]` brings up the inline comment form
+ * `[comment page]` is so you can see the un-hacked comment page, just in case
+
+=== Moderations ===
+For the moderation actions, it makes the moderation drop down box look pretty, with positive mods sorted at the top in green and negative mods at the bottom in red. It also separates the moderation action at the bottom of the page from the comment action, which is often a major source of confusion. If you have already modded that post, then there will only be the comment form at the bottom.
+
+It also uses the exact same moderation actions for comment mods, which are now inline. You don't have to go to another page to mod someone up/down. Big time saver. (If the comment is your own, then there will be no moderation link - Saint_Marck has spoken.)
+
+=== Comments ===
+Likewise, if you want to reply to a comment, there is now an inline reply form. But this form is on steroids. Check it and see. Note that JavaScript does not have access to your system's clipboard for security reasons, thus the buttons on that form must prompt you when they need additional information (such as the <u>A</u> button for making hyperlinks).
+
+*Be aware* that Unicode text is not properly supported yet. I am working on that (and really want your help if you know anything). It will post, but you have to change your page encoding to read it. Everyone else will see it as garbage.
+
+Normal text, which most of us use all the time, works perfectly.
+
+At some point I should enhance the post comment form, too. Not sure when, though...
+
+==== Validation ====
+I added an incredibly simple HTML validation check to spot obvious errors in your HTML, should you choose to post any. It has not been rigorously tested. Let me know if you find a bug.
+
+
+== Change Your Preferences ==
+In Opera, the menu floats on screen. In Firefox, you have to click the monkey. While that is more "menuey", I think it's a pain in the ass, and I may some day force it to float on screen for both browsers.
+
+Anyway, the first menu option is *Change your preferences*. This will bring up a dialog with the default options that are applied whenever you reload a page.
+
+=== Blacklist ===
+Currently, the right side of that dialog - the Blacklist - is just for show. It doesn't actually do anything. Maybe if you nag me...
+
+=== Max Comment Height ===
+On the left side, you can set the maximum height of individual comments (this includes the main entry), so that you don't have to scroll so much to get past everything. On posts with few replies or interesting pictures, this is probably not a good idea. So you can set the height to 0 to disable that.
+
+=== Hiding Old Stuff ===
+You can also choose to automatically hide old comments or old threads.
+
+Comment hiding only hides the reply text, not the byline - so you will still see that a person made some comment and what time, etc. Any individual comment can be toggled using the special link next to the person's name. It is inside the byline, surrounded by a dotted border, and consists of three dots. ... means the comment is hidden, &there4; means it is displayed. 
+
+Thread hiding completely hides the comment, as well as any sub-comments. The toggle button is a + or a - sign to the left of the comment. At the very top of the page you can toggle ALL threads on/off.
+
+The third option is not to hide, but to show. This option affects the results of the two options above. If you really like yourself, then your comments will always display even if they are old. Likewise, the thread leading up to your comment will also display, even if no new comments exist in that thread.
+
+=== Reveal User Scripts ===
+Sometimes, a user will post some script inside their comment that does things on the page at load time. Because of how !UserJavaScripts work, it is not possible to block these scripts in a cross-browser fashion (although specialized Opera solutions are possible).
+
+So this feature simply scans for those scripts and reveals them on the page in a red border. It's not much, but it can help with the head-scratching.
+
+=== Block Multimedia Objects ===
+I sometimes browse from work, so I don't want everything displaying on screen where it might offend bystanders. This option lets me do that for specific types of objects.
+
+Again, because of how !UserJavaScripts work, you may briefly see the objects on screen before this script gets a chance to block it. The timing is very close, and they can start to load before this script fires, which usually means it will be delayed until all objects load.
+
+The trick there is to hit your Escape key to stop page loading. Only hit it once, or you may stop this script, as well.
+
+The objects are not removed, simply set to be hidden and replaced with a notice message. You can choose to make that notice match the size of the object, although sometimes it is not possible to find the correct size. Otherwise, the notice will only use the space for its own text.
+
+=== Actions ===
+*Reset* will just restore the form to what it was before you started editing it.
+*Save* will save these options to the cookie, close the dialog, and attempt to apply them to the current page.
+*Close* will _not_ save the changes, just close the dialog.
+
+
+= Miscellaneous Notes =
+
+You may notice another script or two from time to time. Currently, I have SEButlerAdmin something or other. This tweaks the admin page that lists most recent comments. It's pretty nifty, too, but I'm not going to spend a lot of time documenting it. Use it and be impressed, or don't and be a sucker. Ha ha!
+
+Seriously, I may merge it into this one some day. I have duplicate functions just because they are for separate pages, and I prefer to keep things compact. If I do, I'll document its functionality here.
+
+I am developing these scripts primarily for Opera users. If you want it for Chrome, you'll have to do your own research into their user JS functionality (I've looked at it, but don't think it's ready yet). Same deal with Safari.
+
+If you want it for IE, please seek professional psychiatric help. And get off mah internet!
+
+
+== History ==
+Around 2003 or so I developed a Java-based application to do a lot more than even this script does, but it was a monster (making this script seem like !HelloWorld by comparison) and ridiculously slow, and I just got tired of fussing with it. It hasn't been run in over a year now, and that was just to see if I could still run it.
+
+Prior even to that, I wrote a !JavaScript to enhance moderation options which has worked quite well, although it was embedded in a static web page because I had never heard of Greasemonkey. This required copy+paste of the URL, and was not as easy to use, but I've used it whenever I needed to mod Hot Porn on a reply.
+
+For this project, I am reworking the ideas I implemented in those two things. I also use Rojo^s script as inspiration and for reference, although I have not actually copied any code (yet (I think (_actually, I did use the color coding for the red/green mod select options_))).
+
+I certainly studied Rojo^s code long enough, so if I did copy any of it, please let me know. I would be happy to attribute it. I do not mean to discredit his work in any way, it's great as is. I wrote this for different reasons, although many features are the
+same.
+
+Rojo's GM script alerted me to the idea of using the browser itself for the heavy lifting, but he only wrote for Firefox. While I love Firefox, I do not use it for viewing SE, so I did some research and discovered that Opera (which I have always used to
+browse SE) has had its own GM-like functionality that probably predates GM itself.
+
+And so this script was born circa January 2009. In the last couple months it has ballooned, even though I still don't provide all the functions that !SensibleFacial has. But it has a few more that his doesn't.
+
+
+== Credits ==
+SHOUT OUTS -- Many ideas have been borrowed from the following people
+ # [http://sensiblefacial.googlepages.com/home Sensible Facial by Rojo^]
+{{{
+   // Sensible Facial
+   // 2007-11-21
+   // Copyright (c) 2007 Rojo^
+}}}
+ # [http://www.howtocreate.co.uk/operaStuff/userjs/hideobjects.js hide objects by TarquinWJ]
+{{{
+    // hide objects until double click by TarquinWJ
+    // version 2.1
+    // see http://www.howtocreate.co.uk/operaStuff/userJavaScript.html for details
+}}}
+ # [http://www.dustindiaz.com/getelementsbyclass/ getElementsByClass by Dustin Diaz]

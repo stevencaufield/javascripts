@@ -1,0 +1,57 @@
+#summary In which I document things that pissed me off about javascript.
+
+= Introduction =
+Many days of wasted effort have been spent researching why code that _should_ work just doesn't. Now that I have a public platform to record this stuff, I figured it would be a good idea to document it so I don't forget, and so others can benefit from my tears.
+
+_You might want to hold your comments for now, because I think this page will be very volatile (especially as I learn what I want to do with it). It will certainly expand into multiple pages. So for now just send me a PM instead._
+
+
+= Issues =
+ * [#Declare_Variables always declare your variables]
+
+
+= Declare Variables =
+Javascript lets you declare variables or just start using them:
+{{{
+var myVar = 11;
+myOtherVar = 12;
+}}}
+Don't do the second one, ever. Not even in a `for` loop!
+
+I spent more time trying to find out why variables did not have the values I expected, and there was nothing to suggest it was because I hadn't properly declared them.
+
+It seems that when you start using a variable inside a function, it is treated as global scope. If you call another function that uses the same variable name, they share values. Or, rather, they are the same variable.
+
+This is especially insidious in a recursive function.
+
+Consider this `for` loop:
+{{{
+for (var i=0, k; k=myArray[i]; i++) {
+   // do something with object k
+}
+}}}
+
+Here the loop automatically gets the next `k` object, and it terminates when the end of the array is reached. This is a nice shorthand when I don't want to bother with the array index, just the objects.
+
+By properly declaring k, I scope it to the `for` loop. If the something I do is call the containing function recursively, each time I enter that loop I create a new variable `k` local to that level of recursion.
+
+I had originally written a function to traverse a tree structure without that proper declaration (i.e., I had `for (var i=0; k=myArray[i]; i++)` with `k` just being used). Each recursion used the same variable k, and I got stuck in an infinite loop.
+
+Properly declaring the variable with the `var` keyword will ensure the scope is localized safely.
+
+= Neat Stuff =
+ # [http://www.dustindiaz.com/seven-togglers/  comment by Theodor Zoulias, November 2nd, 2006 at 1:37 pm]
+{{{
+    Well, these are not really seven ways to toggle an element, but seven coding
+    styles using display='none'. Lets see if we can find seven DIFFERENT ways to
+    hide an element. :-)
+
+    - style.display = 'none'
+    - style.visibility = 'hidden'
+    - style.width = '0px'; style.overflow = 'hidden'
+    - style.left = '-1000px'
+    - style.zIndex = 0
+    - style.opacity = 0
+    - style.color = 'white'
+    - parentNode.removeChild(this)
+}}}

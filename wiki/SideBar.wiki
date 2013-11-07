@@ -1,0 +1,4 @@
+ * [JavascriptWikiMainPage Main JavaScript links]
+ * [SE_Butler SensibleErection is not for you!]
+ * [DOM_Notes Ask not what the DOM can do for you...]
+ * [JavaScript_Troubles JavaScript sucks, and this is why.]

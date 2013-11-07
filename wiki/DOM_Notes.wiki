@@ -1,0 +1,158 @@
+#summary What JavaScript can do to your DOM, and what it cannot.
+
+<wiki:toc max_depth="3" />
+
+= Introduction =
+
+When I say DOM (Document Object Model), I mean the logical representation of a given HTML page at some point after all adjustments have been finished.
+
+Manipulating the DOM is very important for most !JavaScripts of any complexity, so I am keeping some notes about gotchas and whatnot.
+
+= Searching =
+== x.getElement`*` ==
+
+There are 2 official element search functions in !JavaScript:
+ # x.getElementById()
+ # x.getElementsByTagName()
+
+That's it. If you've seen others, they are browser-specific extensions and will bite you in the ass. In web development, there is hardly anything that won't bite you in the ass at some point, so be careful.
+
+The 'x' is to signify any node as a starting point -- you don't always have to use "document". If you have another node, you can use that, thereby restricting your search to descendants of that node. This is cool.
+
+Item #1 returns a single element or null, and it relies on having the ID attribute set _properly_:
+{{{
+<span id='I am unique'>blah blah blah</span>
+}}}
+If you have two or more elements with the same ID attribute, kick yourself for disobeying standards, you Microsoft suckup. In such a case, it will probably return the first one it finds, because it assumes you wouldn't be stupid enough to have more. But don't count on that, _and fix your damn HTML_.
+
+Item #2 will bite you in the ass so hard you'll have a new poophole. You may think it returns an array or collection of elements. You'd be thinking wrongly.
+
+It actually returns an object that pretends to be an array, and you can access it like an array, but it is a "live" object. The tags you searched for are added and deleted to it in real time, thus screwing up many attempts to loop through it. Consider:
+{{{
+var pars = document.getElementsByTagName('p');
+for (var i=0; i<pars.length; i++) {
+   var p = pars[i];
+   var p2 = document.createNode('p');
+   p2.innerHTML = p.innerHTML.toUpperCase();
+   p.parentNode.insertBefore(p2, p);
+}
+}}}
+This loop will screw you up. As you add new P nodes, `pars` automatically updates itself, and the length increases. Infinite loop.
+
+Fortunately, that is a stupid thing to do, so you probably won't have this problem. But in such a case it is a good idea to assign the length to a variable before starting the loop, and use the variable as the exit test.
+{{{
+...
+var maxI = pars.length;
+for (var i=0; i<maxI; i++) { ... }
+}}}
+
+
+I encountered many custom alternatives to the getElement`*` methods, and one of the nicer ones is <a href="http://www.dustindiaz.com/getelementsbyclass/" target='_blank'>getElementsByClass</a>.
+
+== Take a walk ==
+
+The next official thing to do is "walk the DOM". This is much like walking the dog: you'll have to stop and sniff every single element you find, all distracting side paths must be investigated, and you'll have to scoop up your own poop. Hey, we have laws here, pal.
+
+The upside is that you are not limited to a specific class, id, tag, or anything. The downside is you have to write a lot more code. Let's say you want to find all the trees in the park. Oh, and find any fire hydrants, too. No particular reason, you just want to find those elements. Let's take a walk in the park.
+{{{
+// get the park so we don't have to find all trees in the city
+var thePark = document.getElementById('park');
+var peeSpots = new Array();
+// get all trees in the park
+walk('trees', thePark, peeSpots);
+// get all fire hydrants, too
+walk('hydrants', thePark, peeSpots);
+// recursive search function
+function walk(searchClass, startNode,  storageArr) {
+  // first check startNode
+  if (startNode.class == searchClass) {
+    storageArr.push(searchClass);
+  }
+  if (startNode.childNodes.length > 0) {
+    for (var i=0, c; c=<startNode.childNodes[i]; i++) {
+      // only check element nodes
+      if (c.nodeType=='1') {
+        // see what the kids look like
+        walk(searchClass, c,  storageArr);
+      }
+    }
+  }
+}
+}}}
+
+Woof. If you looked at the getElementsByClass() method I linked above, you'd notice I didn't need to do a recursive search. Getting all tags matching '`*`' will create a flat list that you can search in a single for loop.
+
+That's okay, I just wanted to show how it was done. There are times when you will need to do it yourself, and it's good to have this code handy.
+
+Also note that my code has a few possible flaws based around the multiple class attribute: `class='a b c'`. Since I didn't check, I may miss some valid instances, plus I may find an instance that has both types and add it twice.
+
+Fixing that, or determining if it really is a flaw, is an exercise I leave to the student.
+
+One more thing about walking: sometimes the most straightforward way to search is straight backwards. Suppose you want all TABLE nodes that are descendants of a DIV with a width of 50%. 
+{{{
+var myTables = new Array();
+var tables = document.getElementsByTagName('table');
+for (var i=0, t; t=tables[i]; i++){
+  var pop=t.parentNode;
+  while (pop != null && pop.tagName != 'div' && pop.style.width != '50%') {
+    pop=pop.parentNode;
+  }
+  if (pop != null) myTables.push(t);
+}
+}}}
+
+(I'm coding off the top of my head, so you may want to test this for bugs.)
+
+Assuming that the parentNode of the root node is null, the `while` loop will eventually terminate no matter what. But it will also terminate if we find a DIV with width equal to '50%'. If that happens, add the table to our result array.
+
+You can just as readily search from top down, getting all DIVs, checking their width, and then finding all TABLEs that descend from the right DIV. But that would be a more complicated search.
+
+
+= Document Fragments =
+
+Think of these as an object array for DOM elements. The fragment itself cannot become part of the DOM, but its elements can. Other than that, it's pretty useless.
+
+Really, the only thing it does is allow you to dump a whole bunch of elements into the DOM at one go, which normally has to be done one at a time. Generally you can do the same thing with an overall containing element (like a DIV element), as long as you don't mind adding the DIV to the DOM as well.
+
+What disappoints me the most about the fragment is that I cannot treat it like a separate DOM. For example, I cannot use `fragment.getElementsByTagName('table')` to get all table elements. This sucks.
+
+To create a document fragment do:
+{{{
+var frag = document.createDocumentFragment();
+}}}
+
+To add HTML nodes do:
+{{{
+frag.appendChild(newNode)
+//or
+frag.insertBefore(newNode, existingNode)
+}}}
+Note that these have to be direct children of the fragment -- they cannot be grandchildren or lower. If you want more levels, you have to add to the children directly.
+
+To add the children (and descendents) to the DOM do something like:
+{{{
+var daddy = document.getElementById('fragParentNode');
+daddy.appendChild(frag);
+// or
+var bro = document.getElementById('fragSiblingNode');
+bro.parentNode.insertBefore(frag, bro);
+}}}
+
+
+= Invisible Text Nodes =
+Every piece of text displayed in the web browser is a child of some HTML element. These pieces of text are called Text nodes, and they are not the same as Element nodes (for one thing, the text nodes have a nodeType of 3).
+
+This may seem clear enough. It will not confuse things too much further to mention that text nodes are found in the childNodes[] array of element nodes, just like any other children of those nodes.
+
+Consider this HTML snippet:
+{{{
+<span><button>Press me</button><input type='checkbox' id='showState'></span>
+}}}
+
+Seems pretty simple, no? There is a SPAN element that contains a BUTTON element and an INPUT element. The BUTTON contains a single TEXT node.
+
+But this is where the DOM bites you in the ass. There is an invisible (and, to be perfectly blunt, non-existent) TEXT node between the BUTTON and the INPUT.
+
+If you display the length of SPAN's childNodes, you'll get 3. If you look at the nodeTypes, you'll get 1-3-1, or element-text-element.
+
+Why is this? Don't ask me. If you know, though, do tell.

@@ -1,0 +1,18 @@
+#summary Various javascripts intended for personal use, so use at own risk
+#labels Featured
+
+= Welcome to Naruki's Bad Scripts =
+
+Hi, long time listener, first time caller. I just had to comment here about javascripts that nobody but me will (or maybe, should) be interested in.
+
+
+= Sub-Projects =
+_(since I have no intention of wasting my 10 allowed projects on individual javascripts)_
+== Projects with Code ==
+ * [SE_Butler Sensible Erection Butler]
+
+The first project is called SE Butler, which is a User Javascript meant to alter entry pages on http://SensibleErection.com. It was designed for use with Opera 9.x browsers, but an effort has been made to keep it compatible with Firefox using the Greasemonkey extension. If you don't know what any of that means, then skip this project.
+
+== Not Really Projects, Just Blather ==
+ * [JavaScript_Troubles Troubles with JavaScript]
+ * [DOM_Notes (Not Quite) All About the DOM]
