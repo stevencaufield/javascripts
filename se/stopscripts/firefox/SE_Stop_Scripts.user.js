@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name        SE Stop Scripts
 // @author      Naruki Bigglesworth
-// @namespace   *.naruki.com
+// @namespace   com.naruki.sensibleerection.stop.scripts
 // @description Block inline and loaded scripts, and reveal them to the user
-// @include     http://www.sensibleerection.com/*
+// @include     http://sensibleerection.com/*
+// @include     http://*.sensibleerection.com/*
 // @version     1
 // @run-at      document-start
 // ==/UserScript==

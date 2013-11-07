@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name           SEButler
-// @namespace      http://www.sensibleerection.com/sebutler
-// @description    Tweaks entry pages at SensibleErection.com
 // @author         Naruki Bigglesworth
+// @namespace      com.naruki.sensibleerection.butler
+// @description    Tweaks entry pages at SensibleErection.com
 // @include        http://sensibleerection.com/entry.php/*
 // @include        http://*.sensibleerection.com/entry.php/*
 // @exclude        http://*.sensibleerection.com/profile.php/*
@@ -276,9 +276,14 @@ function adjustForms() {
         // insert new mod form
         dad.insertBefore(newNode, commentHeader);
       }
-      // put the submit button on a new line
-      var submitBtn = formNode.getElementsByTagName('textarea')[0].nextSibling;
-      formNode.insertBefore(document.createElement('br'), submitBtn);
+      try {
+	// put the submit button on a new line
+	var ta = formNode.getElementsByTagName('textarea')[0];
+	if (!!ta) {
+	  var submitBtn = ta.nextSibling;
+	  formNode.insertBefore(document.createElement('br'), submitBtn);
+	}
+      } catch(e){}
       // clean up the comment form
       var c = formNode.getElementsByTagName('input');
       /*
@@ -3085,14 +3090,15 @@ function mnuShowConfigDialog() {
 /*------------------------------------------------------------------------------
 */
 function createMenu() {
+  GM_registerMenuCommand('Show last 5 comments.',        function(){showLatestComments(5)});
   GM_registerMenuCommand('Show latest X comments',       mnuShowLatestXComments);
   GM_registerMenuCommand('Show only my comment threads', mnuShowMyThreads);
   GM_registerMenuCommand('Show all threads',             mnuShowAllThreads);
   GM_registerMenuCommand('Show all comments',            mnuShowAllComments);
   GM_registerMenuCommand('Hide old threads',             mnuHideOldThreads);
   GM_registerMenuCommand('Hide old comments',            mnuHideOldComments);
-  GM_registerMenuCommand('Change your preferences',      mnuShowConfigDialog);
   GM_registerMenuCommand('Show Top 10 (or so)',          mnuShowTop10);
+  GM_registerMenuCommand('Change your preferences',      mnuShowConfigDialog);
   GM_registerMenuCommand('Stop here, end of menu.',      function(){showLatestComments(5)});
   //GM_registerMenuCommand('Hide comments >= 5 minutes',  mnuHideAgedComments);
 }

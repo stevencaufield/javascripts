@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name           SEAdmin
-// @namespace      com.naruki.sensibleerection.seadmin
-// @description    Tweaks entry pages at SensibleErection.com
 // @author         Naruki Bigglesworth
-// @include        http:/sensibleerection.com/admin.php?detail=comm*
-// @include        http:/*sensibleerection.com/admin.php?detail=comm*
+// @namespace      com.naruki.sensibleerection.admin
+// @description    Tweaks entry pages at SensibleErection.com
+// @include        http://sensibleerection.com/admin.php?detail=comm*
+// @include        http://*sensibleerection.com/admin.php?detail=comm*
 // ==/UserScript==
 
 /*==============================================================================
