@@ -1,0 +1,1 @@
+Initially, I'm writing a pre-load script for Opera & Firefox that affects a specific adult-content site.
